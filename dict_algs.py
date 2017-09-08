@@ -5,6 +5,7 @@ def findWorkers(allWorkers, age_of_child):
         for i in range(len(worker['children'])):
             if worker['children'][i]['age'] > age_of_child:
                 filtered.append(worker['name'])
+                break
     return filtered
 
 
