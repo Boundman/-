@@ -2,8 +2,9 @@
 def findWorkers(allWorkers, age_of_child):
     filtered = []
     for worker in allWorkers:
-        if worker['children']['age'] > age_of_child:
-            filtered.append(worker)
+        for i in range(len(worker['children'])):
+            if worker['children'][i]['age'] > age_of_child:
+                filtered.append(worker['name'])
     return filtered
 
 
@@ -38,3 +39,4 @@ print("Workers, who entered the filtration: ")
 print( findWorkers(emps, 18) )
 
 input()
+
