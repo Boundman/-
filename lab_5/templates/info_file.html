@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}Some data{% endblock %}
+{% block body %}
+    <ul>
+        {% for film in films %}
+            <li>{{ film.name }}, {{ film.description }}, Режиссёр - {{ film.author }}, Страна - {{ film.country }}.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
