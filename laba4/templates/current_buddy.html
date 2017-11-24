@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% block title %}{% endblock %}
+{% block body %}
+    <li><a href="{% url 'people_url' human.id %}">{{ human.first_name }} {{ human.last_name }}, {{ human.age }} years old</a></li><br>
+{% endblock %}

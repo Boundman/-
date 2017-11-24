@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Some peoples{% endblock %}
+{% block body %}
+    <ul id="list">
+        {% for human in peoples %}
+            {% if 'last_name' in human %}
+                {% include 'current_buddy.html' with element=human %}
+            {% endif %}
+        {% empty %}
+        {% endfor %}
+    </ul>
+{% endblock %}
