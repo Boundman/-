@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}End of Registration{% endblock %}
+{% block body %}
+    <form method="post">
+        {% csrf_token %}
+        You was Log In as {{ user.username }}<br><br>
+        <button type="submit" name="logout">Log Out</button>
+    </form>
+{% endblock %}

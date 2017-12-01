@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Start page{% endblock %}
+{% block body %}
+    <form method="post">
+        {% csrf_token %}
+        <label>
+            Welcome
+        </label><br><br>
+        <button type="submit" name="sign_in">Sign in</button>
+        <button type="submit" name="sign_up">Sign up</button>
+    </form>
+{% endblock %}
