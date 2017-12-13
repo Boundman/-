@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}End of Registration{% endblock %}
+{% block body %}
+
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            <div class="add">
+                <button class="btn btn-primary" type="submit" name="addFilm">Добавить</button>
+            </div>
+            <div class="out">
+                <button class="btn btn-primary" type="submit" name="logout">Выйти</button>
+            </div>
+        </div>
+    </form>
+    <div class="films_list">
+        {% if films != 0 %}
+            {% for film in films %}
+                {% include 'current_film.html' with element=film %}
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock %}

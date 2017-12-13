@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ film.name }}{% endblock %}
+{% block body %}
+    {% include 'current_film.html' with element=film %}<br>
+
+
+
+    {% if reviews != 0 %}
+        {% for review in reviews %}
+            <div class="review">
+                <div class="content">
+                    Оставил пользователь: {{ review.username }} ({{ review.first_name }} {{ review.last_name }})
+                    <div style="font-weight: 600; font-size: large">{{ review.title }}</div>
+                    {{ review.review_text }}<br>
+                    {{ review.publication_date }}
+                </div>
+            </div>
+        {% endfor %}<br>
+    {% endif %}
+
+    <form method="post">
+    {% csrf_token %}
+        <div class="back">
+            <button type="submit" class="btn btn-primary" name="back">
+                Назад
+            </button>
+        </div>
+    </form>
+
+    <div class="outter">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+            Добавить отзыв
+        </button>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Добавление отзыва</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form method="post">
+                    <div class="modal-body">
+                        {% csrf_token %}
+                        {{ form }}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                        <button type="submit" class="btn btn-primary">Добавить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

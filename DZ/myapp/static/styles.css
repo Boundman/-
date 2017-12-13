@@ -1,0 +1,96 @@
+.film{
+    margin-left: 50px;
+    background-color: #ecedf4;
+    width: 66%;
+    float: left;
+    padding: 10px;
+    border-radius: 15px;
+    margin-top: 15px;
+}
+
+.film img{
+    width: 50%;
+}
+
+.film_info{
+    float: right;
+    width: 49%;
+}
+
+.film_info a{
+    padding: 3px;
+}
+
+.film_info a:hover{
+    background-color: #d8dcff;
+    border-radius: 15px;
+    color: #003dbf;
+    text-decoration: none;
+}
+
+.review{
+    float: left;
+    width: 50%;
+    margin-left: 90px;
+    margin-top: 20px;
+}
+
+.review .content{
+    float: left;
+    background-color: #eef2ff;
+    border-radius: 20px;
+    padding: 10px;
+}
+
+.outter, .out{
+    float: right;
+    width: 55%;
+}
+
+.back, .add{
+    margin-left: 50px;
+    width: 40%;
+    float: left;
+}
+
+.outter, .back{
+    padding: 25px;
+}
+
+.add, .out{
+    padding: 10px;
+}
+
+.buttn{
+    margin-top: 30px;
+}
+
+.but1{
+    width: 25%;
+    float: left;
+    margin-left: 25%;
+}
+
+.but2{
+    width: 25%;
+    float: left;
+    margin-right: 25%;
+}
+
+.buttn button{
+    width: 200px;
+    height: 200px;
+    border-radius: 100px;
+    border: 1px solid #000000;
+    background-color: #9c85db;
+    color: #ffffff;
+    font-weight: 600;
+    font-family: helvetica, serif;
+    text-decoration: none;
+    vertical-align: middle;
+}
+
+.buttn button:hover{
+    color: black;
+    background-color: #8a6bdb;
+}

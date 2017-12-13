@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Sign In{% endblock %}
+{% block body %}
+    <form method="post">
+        {% csrf_token %}
+
+        {% if errors != 0 %}
+            {% for error in errors %}
+                {{ error }}.
+            {% endfor %}
+        {% endif %}
+
+        <div class="form-group">
+            <label for="exampleInputEmail1">Логин</label>
+            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                   placeholder="Введите логин" name="login">
+        </div>
+        <div class="form-group">
+            <label for="exampleInputPassword1">Пароль</label>
+            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Ваш пароль" name="password">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+        {% for user in users %}
+            {{ user.username }}, {{ user.last_name }}, {{ user.first_name }}<br>
+        {% endfor %}
+
+    </form>
+{% endblock %}

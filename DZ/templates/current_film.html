@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block  title%}{% endblock %}
+{% block  body%}
+    <div class="film">
+        <img src="/{{ film.picture }}" style="width: 400px;">
+        <div class="film_info">
+            <h4><a href="{% url 'film_info' film.id %}">{{ film.name }}</a></h4>
+            автор: {{ film.author }}, страна: {{ film.country }}<br><br>
+            {{ film.description }}
+        </div>
+    </div>
+{% endblock %}
