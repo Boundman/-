@@ -2,8 +2,14 @@
 {% block title %}Film Addition{% endblock %}
 {% block body %}
     <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Add</button>
+        <div class="add_film" style="padding: 15px; width: 30%">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <label>Описание:</label>
+            <textarea name="description" type="email" class="form-control" id="exampleInputEmail1"
+                      aria-describedby="emailHelp" placeholder="Описание фильма" style="height: 100px"></textarea>
+            <br>
+            <button type="submit" class="btn btn-primary">Добавить</button><br><br>
+        </div>
     </form>
 {% endblock %}

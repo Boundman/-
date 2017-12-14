@@ -22,9 +22,12 @@ def signIn(request):
     errors = []
     users = User.objects.all()
     if request.method == 'POST':
-
-            username = request.POST.get('login')
-            password = request.POST.get('password')
+        if 'reg' in request.POST:
+            return HttpResponseRedirect('/signup/')
+        form = EnterForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
             user = auth.authenticate(username=username, password=password)
             if user:
                 auth.login(request, user)
@@ -40,6 +43,8 @@ def signUp(request):
     errors = []
     success = ''
     if request.method == 'POST':
+        if 'signIn' in request.POST:
+            return HttpResponseRedirect('/signin/')
         form = RegistrationForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data['username']
@@ -62,8 +67,8 @@ def signUp(request):
                     last_name=form.cleaned_data['last_name']
                 )
                 user.save()
-                success += 'You was successfully registered.'
-                #return HttpResponseRedirect('/login/')
+                success += 'Вы были успешно зарегистрированы!'
+                return HttpResponseRedirect('/login/')
 
     else:
         form = RegistrationForm()
@@ -86,13 +91,14 @@ def addFilm(request):
     if request.method == 'POST':
         form = AddFilm(request.POST, request.FILES)
         if form.is_valid():
-            film = Film(name=form.cleaned_data['title'], description=form.cleaned_data['description'],
+            description = request.POST.get('description')
+            film = Film(name=form.cleaned_data['title'], description=description,
                         author=form.cleaned_data['author'], country=form.cleaned_data['country'],
                         picture=form.cleaned_data['image'])
 
             film.save()
-
-            return HttpResponseRedirect('/login/')
+            url = '/film_info/' + str(film.id) + '/'
+            return HttpResponseRedirect(url)
     else:
         form = AddFilm()
     return render(request, 'add_Film.html', {'form': form})
@@ -100,7 +106,6 @@ def addFilm(request):
 
 def filmInfo(request, id):
     new_list = []
-    #reviews = list(filter(lambda x: x.film_id == id, Review.objects.all()))
     reviews = Review.objects.all()
 
     for review in reviews:

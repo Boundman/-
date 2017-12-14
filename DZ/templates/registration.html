@@ -3,17 +3,20 @@
 {% block body %}
     <form method="post">
         {% csrf_token %}
+        <div class="sign_up" style="width: 30%; padding: 15px">
+            {% if errors != 0 %}
+                {% for error in errors %}
+                    {{ error }}.
+                {% endfor %}
+            {% endif %}
 
-        {% if errors != 0 %}
-            {% for error in errors %}
-                {{ error }}.
-            {% endfor %}
-        {% endif %}
+            {{ form.as_p }}
+            <br><button type="submit" class="btn btn-primary">Зарегистрироватся</button><br><br>
+            {% if success != 0 %}
+                {{ success }}<br>
+            {% endif %}
 
-        {{ form.as_p }}
-        <button type="submit">Registration</button>
-        {% if success != 0 %}
-            {{ success }}
-        {% endif %}
+            <a href="/signin"><button type="button" name="signIn" class="btn btn-primary">Перейти к авторизации</button></a><br>
+        </div>
     </form>
 {% endblock %}
