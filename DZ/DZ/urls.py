@@ -15,14 +15,16 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from myapp.views import signIn, signUp, endreg, start, addFilm, filmInfo
+from myapp.views import signIn, signUp, endreg, start, addFilm, filmInfo, addReview, infiniteScroll
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^login/infinite_scroll', infiniteScroll, name='infinite_scroll'),
     url(r'^login/', endreg),
     url(r'^signin/', signIn),
     url(r'^signup/', signUp),
     url(r'^start/', start),
     url(r'^add_Film/', addFilm),
+    url(r'^film_info/add_review', addReview),
     url(r'^film_info/(?P<id>\d+)', filmInfo, name='film_info'),
 ]

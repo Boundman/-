@@ -18,6 +18,7 @@
             </div>
         {% endfor %}<br>
     {% endif %}
+    <div id="talk" class="review"></div>
 
     <form method="post">
     {% csrf_token %}
@@ -45,7 +46,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form method="post">
+                <form method="post" id="add_review">
                     <div class="modal-body" style="width: 85%; padding: 15px">
                         {% csrf_token %}
                         {{ form }}

@@ -84,9 +84,9 @@ class AddReview(forms.Form):
     def __init__(self, *args, **kwargs):
         super(AddReview, self).__init__(*args, **kwargs)
         self.fields['title'].widget.attrs.update({'type': 'email', 'class': 'form-control',
-                                                     'id': 'exampleInputEmail1', 'aria-describedby': 'emailHelp',
+                                                     'id': 'title', 'aria-describedby': 'emailHelp',
                                                      'placeholder': 'Введите Заголовок'})
 
         self.fields['reviewText'].widget.attrs.update({'type': 'email', 'class': 'form-control',
-                                                  'id': 'exampleInputEmail1', 'aria-describedby': 'emailHelp',
+                                                  'id': 'description', 'aria-describedby': 'emailHelp',
                                                   'placeholder': 'Введите Отзыв'})

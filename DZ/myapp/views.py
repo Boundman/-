@@ -2,7 +2,9 @@ from django.shortcuts import render, HttpResponse, HttpResponseRedirect
 from .forms import RegistrationForm, EnterForm, AddFilm, AddReview
 from django.contrib.auth.models import User
 from django.contrib import auth
-import os
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
+import re
+import json
 import datetime
 from DZ.settings import BASE_DIR, LOGIN_URL, STATICFILES_DIRS
 from myapp.models import Film, Review
@@ -126,20 +128,74 @@ def filmInfo(request, id):
         if 'back' in request.POST:
             return HttpResponseRedirect('/login/')
         form = AddReview(request.POST)
-        if form.is_valid():
-            data = form.cleaned_data
-            title = data.get('title', '')
-            title_text = data.get('reviewText', '')
-            publication_date = datetime.datetime.now()
-            user_id = request.user.id
-            film_id = id
+        # if form.is_valid():
+        # data = form.cleaned_data
+        # title = data.get('title', '')
+        # title_text = data.get('reviewText', '')
+        # publication_date = datetime.datetime.now()
+        # user_id = request.user.id
+        # film_id = id
 
-            review = Review(title=title, review_text=title_text, publication_date=publication_date,
-                            user_id_id=user_id, film_id_id=film_id)
-            review.save()
+        # review = Review(title=title, review_text=title_text, publication_date=publication_date,
+        #                user_id_id=user_id, film_id_id=film_id)
+        # review.save()
 
-            url = '/film_info/' + str(id) + '/'
-            return HttpResponseRedirect(url)
+        # url = '/film_info/' + str(id) + '/'
+        # return HttpResponseRedirect(url)
     else:
         form = AddReview()
     return render(request, 'film_info.html', {'form': form, 'film': film, 'reviews': new_list})
+
+
+@csrf_exempt
+def addReview(request):
+    if request.method == 'POST':
+        response_data = {}
+        response_data['result'] = 'Create post successful!'
+
+        title = request.POST.get('title')
+        title_text = request.POST.get('description')
+        publication_date = datetime.datetime.today().strftime("%Y-%m-%d")
+        user_id = request.user.id
+
+        url = request.POST.get('film_url')
+        digit = re.sub(r'[^0-9]', '', url)
+        film_id = digit
+
+        review = Review(title=title, review_text=title_text, publication_date=publication_date,
+                        user_id_id=user_id, film_id_id=film_id)
+        review.save()
+
+        response_data['title'] = title
+        response_data['title_text'] = title_text
+        response_data['publication_date'] = publication_date
+        user = User.objects.get(id=review.user_id_id)
+        response_data['username'] = user.username
+        response_data['first_name'] = user.first_name
+        response_data['last_name'] = user.last_name
+
+        return HttpResponse(
+            json.dumps(response_data),
+            content_type="application/json"
+        )
+    else:
+        return HttpResponse(
+            json.dumps({"nothing to see": "this isn't happening"}),
+            content_type='application/json'
+        )
+
+
+def infiniteScroll(request):
+    if request.method == 'POST':
+        response_data = {}
+        response_data['result'] = 'It`s working'
+        response_data['fuck'] = request.POST.get('message')
+        return HttpResponse(
+            json.dumps(response_data),
+            content_type="application/json"
+        )
+    else:
+        return HttpResponse(
+            json.dumps({"nothing to see": "this isn't happening"}),
+            content_type='application/json'
+        )
