@@ -21,9 +21,6 @@
             Ещё не зарегистрированы?<br>
             <a href="/signup"><button type="button" name="reg" class="btn btn-primary">Перейти к регистрации</button></a><br>
         </div>
-        {% for user in users %}
-            {{ user.username }}, {{ user.last_name }}, {{ user.first_name }}<br>
-        {% endfor %}
 
     </form>
 {% endblock %}

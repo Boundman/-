@@ -1,78 +1,101 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}End of Registration{% endblock %}
+{% block title %}Films list{% endblock %}
 {% block body %}
 
+    <div class="add">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Добавить Фильм</button>
+    </div>
     <form method="post">
         {% csrf_token %}
         <div>
-            <div class="add">
-                <button class="btn btn-primary" type="submit" name="addFilm">Добавить</button>
-            </div>
             <div class="out">
                 <button class="btn btn-primary" type="submit" name="logout">Выйти</button>
             </div>
         </div>
     </form>
-    <div class="films_list">
-        {% if films != 0 %}
-            {% for film in films %}
-                {% include 'current_film.html' with element=film %}
-            {% endfor %}
-        {% endif %}
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Добавление фильма</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form method="post" enctype="multipart/form-data">
+                    <div class="modal-body" style="width: 85%; padding: 15px">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <label>Описание:</label>
+                        <textarea name="description" type="email" class="form-control" id="exampleInputEmail1"
+                        aria-describedby="emailHelp" placeholder="Описание фильма" style="height: 100px"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                        <button type="submit" class="btn btn-primary">Добавить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-    <div id="loading_ind" style="text-align: center"></div>
+
+    <div id="film"></div>
+
+    <div id="loading_ind" style="float: left; margin-left: 200px"></div>
 
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script>
+        var page_number = 1;
+
         function LoadContent(page_number) {
             csrf_token = "{{ csrf_token }}";
             $.ajax({
-                url: "infinite_scroll/",
+                url: '{% url 'infinite_scroll' %}',
                 type: "POST",
                 data: {
-                    message: 'correct'
-                }, //'action=infinite_scroll&page_number=' + page_number,
+                    page_number: page_number,
+                    action: 'infinite_scroll',
+                    amount_pages: {{ pages }}
+                },
                 headers: {'X-CSRFToken': csrf_token},
-                success: function (json) {
-                    console.log('fuck fuck');
-                    document.getElementById("loading_ind").textContent = json.fuck;
-                    //$("#pag_container").append(response);
+                success: function (response) {
+                    console.log('in success');
+                    console.log(response);
+                    $('#film').append(response);
                 },
                 error: function (response) {
-                    console.log("not fuck");
-                    //$("#pag_container").append("an error occured, try again");
+                    console.log("error");
+                    console.log(response);
                 }
             });
         }
-
-        var page_number = 1;
 
         $(window).scroll(
             function () {
                 if ($(window).scrollTop() == $(document).height() - $(window).height()) {
                     document.getElementById("loading_ind").textContent = 'Загрузка...';
                     console.log("End of page reached!");
-                    //Подгрузка новых элементов
-                    if (page_number) {
-                        console.log("fuck");
+                    if (page_number <= {{ pages }}) {
+                        console.log("подгружаем...");
                         LoadContent(page_number);
                         page_number++;
                     }
                     else {
-                        console.log("you");
-                        LoadContent(page_number);
-                        //document.getElementById("loading_ind").textContent = 'конец списка';
+                        console.log("end");
+                        document.getElementById("loading_ind").textContent = 'Конец списка';
                     }
                 }
             });
 
-        //$(document).ready(
-          //  function () {
-            //    document.getElementById("loading_ind").textContent = 'Загрузка...';
-              //  LoadContent(page_number);
-                //page_number++;
-            //});
+        $(document).ready(
+            function () {
+                LoadContent(page_number);
+                page_number++;
+            });
     </script>
 
 {% endblock %}

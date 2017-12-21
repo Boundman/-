@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block  title%}{% endblock %}
+{% block  body%}
+    <div class="films_list">
+        {% for film in films %}
+            {% include 'current_film.html' with element=film %}
+        {% endfor %}
+    </div>
+{% endblock %}

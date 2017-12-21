@@ -22,7 +22,6 @@ def start(request):
 
 def signIn(request):
     errors = []
-    users = User.objects.all()
     if request.method == 'POST':
         if 'reg' in request.POST:
             return HttpResponseRedirect('/signup/')
@@ -38,7 +37,7 @@ def signIn(request):
                 errors.append('Неверно введён логин или пароль')
     else:
         form = EnterForm()
-    return render(request, 'signIn.html', {'form': form, 'errors': errors, 'users': users})
+    return render(request, 'signIn.html', {'form': form, 'errors': errors})
 
 
 def signUp(request):
@@ -79,31 +78,39 @@ def signUp(request):
 
 
 def endreg(request):
-    films = Film.objects.all()
+    users = User.objects.all()
+    online = False
+    for user in users:
+        if user.is_authenticated():
+            online = True
+
+    amount_films = Film.objects.all().count()
+    amount_pages = 0
+    if amount_films % 3 == 1 or amount_films % 3 == 2:
+        amount_pages = int(amount_films / 3 + 1)
+    elif amount_films % 3 == 0:
+        amount_pages = amount_films / 3
+
     if request.method == 'POST':
         if 'logout' in request.POST:
             auth.logout(request)
             return HttpResponseRedirect('/signin/')
-        if 'addFilm' in request.POST:
-            return HttpResponseRedirect('/add_Film/')
-    return render(request, 'endReg.html', {'films': films})
 
-
-def addFilm(request):
-    if request.method == 'POST':
-        form = AddFilm(request.POST, request.FILES)
-        if form.is_valid():
-            description = request.POST.get('description')
-            film = Film(name=form.cleaned_data['title'], description=description,
-                        author=form.cleaned_data['author'], country=form.cleaned_data['country'],
-                        picture=form.cleaned_data['image'])
-
-            film.save()
-            url = '/film_info/' + str(film.id) + '/'
-            return HttpResponseRedirect(url)
+        if online:
+            form = AddFilm(request.POST, request.FILES)
+            if form.is_valid():
+                description = request.POST.get('description')
+                film = Film(name=form.cleaned_data['title'], description=description,
+                            author=form.cleaned_data['author'], country=form.cleaned_data['country'],
+                            picture=form.cleaned_data['image'])
+                film.save()
+                url = '/film_info/' + str(film.id) + '/'
+                return HttpResponseRedirect(url)
+        else:
+            return HttpResponseRedirect('/signin/')
     else:
         form = AddFilm()
-    return render(request, 'add_Film.html', {'form': form})
+    return render(request, 'endReg.html', {'pages': amount_pages, 'form': form})
 
 
 def filmInfo(request, id):
@@ -128,20 +135,6 @@ def filmInfo(request, id):
         if 'back' in request.POST:
             return HttpResponseRedirect('/login/')
         form = AddReview(request.POST)
-        # if form.is_valid():
-        # data = form.cleaned_data
-        # title = data.get('title', '')
-        # title_text = data.get('reviewText', '')
-        # publication_date = datetime.datetime.now()
-        # user_id = request.user.id
-        # film_id = id
-
-        # review = Review(title=title, review_text=title_text, publication_date=publication_date,
-        #                user_id_id=user_id, film_id_id=film_id)
-        # review.save()
-
-        # url = '/film_info/' + str(id) + '/'
-        # return HttpResponseRedirect(url)
     else:
         form = AddReview()
     return render(request, 'film_info.html', {'form': form, 'film': film, 'reviews': new_list})
@@ -187,15 +180,21 @@ def addReview(request):
 
 def infiniteScroll(request):
     if request.method == 'POST':
-        response_data = {}
-        response_data['result'] = 'It`s working'
-        response_data['fuck'] = request.POST.get('message')
-        return HttpResponse(
-            json.dumps(response_data),
-            content_type="application/json"
-        )
-    else:
-        return HttpResponse(
-            json.dumps({"nothing to see": "this isn't happening"}),
-            content_type='application/json'
-        )
+        films = Film.objects.all()
+
+        page_number = 1
+        first = 1
+        if request.POST.get('page_number') != 0:
+            page_number = int(request.POST.get('page_number'))
+            first = (int(page_number)-1) * 3 + 1
+        last = page_number * 3
+
+        current_films = []
+        number_current_film = 1
+
+        for film in reversed(films):
+            if (number_current_film >= first) and (number_current_film <= last):
+                current_films.append(film)
+            number_current_film += 1
+
+        return render(request, 'films_list.html', {'films': current_films})
