@@ -110,7 +110,7 @@ def endreg(request):
             return HttpResponseRedirect('/signin/')
     else:
         form = AddFilm()
-    return render(request, 'endReg.html', {'pages': amount_pages, 'form': form})
+    return render(request, 'endReg.html', {'pages': amount_pages, 'form': form, 'username': auth.get_user(request).username})
 
 
 def filmInfo(request, id):
@@ -137,7 +137,7 @@ def filmInfo(request, id):
         form = AddReview(request.POST)
     else:
         form = AddReview()
-    return render(request, 'film_info.html', {'form': form, 'film': film, 'reviews': new_list})
+    return render(request, 'film_info.html', {'form': form, 'film': film, 'reviews': new_list, 'username': auth.get_user(request).username})
 
 
 @csrf_exempt

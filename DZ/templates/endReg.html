@@ -3,16 +3,29 @@
 {% block title %}Films list{% endblock %}
 {% block body %}
 
-    <div class="add">
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Добавить Фильм</button>
-    </div>
+    {% if username %}
+        <div class="add">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"
+                    name="add_film">Добавить Фильм
+            </button>
+        </div>
+    {% endif %}
     <form method="post">
         {% csrf_token %}
-        <div>
-            <div class="out">
-                <button class="btn btn-primary" type="submit" name="logout">Выйти</button>
+        {% if username %}
+            <div>
+                <div class="out">
+                    <button class="btn btn-primary" type="submit" name="logout">Выйти</button>
+                </div>
             </div>
-        </div>
+        {% endif %}
+        {% if not username %}
+            <div>
+                <div class="out">
+                    <button class="btn btn-primary" type="submit" name="logout">Войти</button>
+                </div>
+            </div>
+        {% endif %}
     </form>
 
     <!-- Modal -->
@@ -26,17 +39,19 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form method="post" enctype="multipart/form-data">
+                <form id="AddFilmForm" method="post" enctype="multipart/form-data" novalidate>
                     <div class="modal-body" style="width: 85%; padding: 15px">
                         {% csrf_token %}
                         {{ form.as_p }}
                         <label>Описание:</label>
-                        <textarea name="description" type="email" class="form-control" id="exampleInputEmail1"
-                        aria-describedby="emailHelp" placeholder="Описание фильма" style="height: 100px"></textarea>
+                        <textarea name="description" type="text" class="form-control" id="exampleInputEmail1"
+                                  aria-describedby="emailHelp" placeholder="Описание фильма"
+                                  style="height: 100px"></textarea>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-                        <button type="submit" class="btn btn-primary">Добавить</button>
+                        <button id="AddFilmFormButton" type="submit" class="btn btn-primary">Добавить</button>
+                        <div id="probka"></div>
                     </div>
                 </form>
             </div>
@@ -47,7 +62,8 @@
 
     <div id="loading_ind" style="float: left; margin-left: 200px"></div>
 
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
     <script>
         var page_number = 1;
 

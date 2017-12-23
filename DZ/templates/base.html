@@ -15,5 +15,57 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
     <script src="{% static 'js/main.js' %}"></script>
     <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
+    <script>
+        $(document).ready(
+        function () {
+            $('#AddFilmForm').validate({
+                rules: {
+                    title: {
+                        required: true,
+                        minlength: 3,
+                        maxlength: 30
+                    },
+                    author: {
+                        required: true,
+                        minlength: 5,
+                        maxlength: 35
+                    },
+                    country: {
+                        required: true,
+                        minlength: 2,
+                        maxlength: 30
+                    },
+                    image: {
+                        required: true
+                    }
+                },
+                messages: {
+                    title: {
+                        required: "Заполните это поле",
+                        minlength: "Длина названия должна быть не менее 3 символов",
+                        maxlength: "Длина названия должна быть не более 30 символов"
+                    },
+                    author: {
+                        required: "Заполните это поле",
+                        minlength: "Длина имени автора должна быть не менее 5 символов",
+                        maxlength: "Длина имени автора должна быть не более 35 символов"
+                    },
+                    country: {
+                        required: "Заполните это поле",
+                        minlength: "Длина названия страны должна быть не менее 2 символов",
+                        maxlength: "Длина названия страны автора должна быть не более 30 символов"
+                    },
+                    image: {
+                        required: "Заполните это поле"
+                    }
+                },
+                success: function(){
+                    $("#AddFilmFormButton").attr('disabled', false);
+                }
+
+            })
+        });
+    </script>
 </body>
 </html>

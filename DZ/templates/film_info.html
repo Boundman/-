@@ -29,11 +29,13 @@
         </div>
     </form>
 
-    <div class="outter">
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-            Добавить отзыв
-        </button>
-    </div>
+    {% if username %}
+        <div class="outter">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                Добавить отзыв
+            </button>
+        </div>
+    {% endif %}
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"

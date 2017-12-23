@@ -20,7 +20,7 @@ from myapp.views import signIn, signUp, endreg, start, filmInfo, addReview, infi
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^login/infinite_scroll', infiniteScroll, name='infinite_scroll'),
-    url(r'^login/', endreg),
+    url(r'^login/', endreg, name='films_list'),
     url(r'^signin/', signIn),
     url(r'^signup/', signUp),
     url(r'^start/', start),

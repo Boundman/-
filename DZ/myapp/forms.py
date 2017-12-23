@@ -54,27 +54,27 @@ class AddFilm(forms.Form):
         model = Film
         exclude = ['title', 'description', 'author', 'country']
 
-    title = forms.CharField(label='Название', min_length=1, max_length=100)
-    author = forms.CharField(label='Автор', min_length=5, max_length=35)
-    country = forms.CharField(label='Страна', min_length=2, max_length=30)
+    title = forms.CharField(label='Название') # , min_length=1, max_length=100)
+    author = forms.CharField(label='Автор') # , min_length=5, max_length=35)
+    country = forms.CharField(label='Страна') # , min_length=2, max_length=30)
     image = forms.FileField(label='Загрузить', allow_empty_file=True)
 
     def __init__(self, *args, **kwargs):
         super(AddFilm, self).__init__(*args, **kwargs)
-        self.fields['title'].widget.attrs.update({'type': 'email', 'class': 'form-control',
-                                                     'id': 'exampleInputEmail1', 'aria-describedby': 'emailHelp',
-                                                     'placeholder': 'Введите Название'})
+        self.fields['title'].widget.attrs.update({'name': 'title', 'type': 'text', 'class': 'form-control',
+                                                 'id': 'title', 'aria-describedby': 'emailHelp',
+                                                  'placeholder': 'Введите Название'})
 
-        self.fields['author'].widget.attrs.update({'type': 'email', 'class': 'form-control',
-                                                        'id': 'exampleInputEmail1', 'aria-describedby': 'emailHelp',
-                                                        'placeholder': 'Автор'})
+        self.fields['author'].widget.attrs.update({'name': 'author', 'type': 'text', 'class': 'form-control',
+                                                  'id': 'author', 'aria-describedby': 'emailHelp',
+                                                   'placeholder': 'Автор'})
 
-        self.fields['country'].widget.attrs.update({'type': 'email', 'class': 'form-control',
-                                                        'id': 'exampleInputEmail1', 'aria-describedby': 'emailHelp',
-                                                        'placeholder': 'Страна'})
+        self.fields['country'].widget.attrs.update({'name': 'country', 'type': 'text', 'class': 'form-control',
+                                                    'id': 'country', 'aria-describedby': 'emailHelp',
+                                                    'placeholder': 'Страна'})
 
-        self.fields['image'].widget.attrs.update({'label': 'Загрузить', 'type': 'file', 'class': 'form-control-file',
-                                                    'id': 'exampleFormControlFile1'})
+        self.fields['image'].widget.attrs.update({'name': 'image', 'label': 'Загрузить', 'type': 'file',
+                                                  'class': 'form-control-file', 'id': 'image'})
 
 
 class AddReview(forms.Form):
