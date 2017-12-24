@@ -6,18 +6,22 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt
 import re
 import json
 import datetime
+from django.views.generic import View
 from DZ.settings import BASE_DIR, LOGIN_URL, STATICFILES_DIRS
 from myapp.models import Film, Review
 import django.contrib.admin
 
 
-def start(request):
-    if request.method == 'POST':
-        if 'sign_in' in request.POST:
-            return HttpResponseRedirect('/signin/')
-        elif 'sign_up' in request.POST:
-            return HttpResponseRedirect('/signup/')
-    return render(request, 'start_page.html')
+class Start(View):
+    def get(self, request):
+        return render(request, 'start_page.html')
+
+    def post(self, request):
+        if request.method == 'POST':
+            if 'sign_in' in request.POST:
+                return HttpResponseRedirect('/signin/')
+            elif 'sign_up' in request.POST:
+                return HttpResponseRedirect('/signup/')
 
 
 def signIn(request):
@@ -77,67 +81,72 @@ def signUp(request):
     return render(request, 'registration.html', {'form': form, 'errors': errors, 'success': success})
 
 
-def endreg(request):
-    users = User.objects.all()
-    online = False
-    for user in users:
-        if user.is_authenticated():
-            online = True
+class FilmsList(View):
+    def post(self, request):
+        users = User.objects.all()
+        online = False
+        for user in users:
+            if user.is_authenticated():
+                online = True
 
-    amount_films = Film.objects.all().count()
-    amount_pages = 0
-    if amount_films % 3 == 1 or amount_films % 3 == 2:
-        amount_pages = int(amount_films / 3 + 1)
-    elif amount_films % 3 == 0:
-        amount_pages = amount_films / 3
+        if request.method == 'POST':
+            if 'logout' in request.POST:
+                auth.logout(request)
+                return HttpResponseRedirect('/signin/')
 
-    if request.method == 'POST':
-        if 'logout' in request.POST:
-            auth.logout(request)
-            return HttpResponseRedirect('/signin/')
+            if online:
+                form = AddFilm(request.POST, request.FILES)
+                if form.is_valid():
+                    description = request.POST.get('description')
+                    film = Film(name=form.cleaned_data['title'], description=description,
+                                author=form.cleaned_data['author'], country=form.cleaned_data['country'],
+                                picture=form.cleaned_data['image'])
+                    film.save()
+                    url = '/film_info/' + str(film.id) + '/'
+                    return HttpResponseRedirect(url)
+            else:
+                return HttpResponseRedirect('/signin/')
 
-        if online:
-            form = AddFilm(request.POST, request.FILES)
-            if form.is_valid():
-                description = request.POST.get('description')
-                film = Film(name=form.cleaned_data['title'], description=description,
-                            author=form.cleaned_data['author'], country=form.cleaned_data['country'],
-                            picture=form.cleaned_data['image'])
-                film.save()
-                url = '/film_info/' + str(film.id) + '/'
-                return HttpResponseRedirect(url)
-        else:
-            return HttpResponseRedirect('/signin/')
-    else:
-        form = AddFilm()
-    return render(request, 'endReg.html', {'pages': amount_pages, 'form': form, 'username': auth.get_user(request).username})
+    def get(self, request):
+        amount_films = Film.objects.all().count()
+        amount_pages = 0
+        if amount_films % 3 == 1 or amount_films % 3 == 2:
+            amount_pages = int(amount_films / 3 + 1)
+        elif amount_films % 3 == 0:
+            amount_pages = amount_films / 3
+
+        form = AddFilm(request.POST or None)
+        return render(request, 'endReg.html', {'pages': amount_pages, 'form': form, 'username': auth.get_user(request).username})
 
 
-def filmInfo(request, id):
-    new_list = []
-    reviews = Review.objects.all()
+class FilmInfo(View):
+    def post(self, request, id):
+        if request.method == 'POST':
+            if 'back' in request.POST:
+                return HttpResponseRedirect('/login/')
 
-    for review in reviews:
-        if int(id) == review.film_id_id:
-            review_dict = dict()
-            review_dict['title'] = review.title
-            review_dict['review_text'] = review.review_text
-            review_dict['publication_date'] = review.publication_date
-            user = User.objects.get(id=review.user_id_id)
-            review_dict['username'] = user.username
-            review_dict['first_name'] = user.first_name
-            review_dict['last_name'] = user.last_name
-            new_list.append(review_dict)
+    def get(self, request, id):
+        form = AddReview(request.POST or None)
 
-    film = Film.objects.get(id=id)
+        new_list = []
+        reviews = Review.objects.all()
 
-    if request.method == 'POST':
-        if 'back' in request.POST:
-            return HttpResponseRedirect('/login/')
-        form = AddReview(request.POST)
-    else:
-        form = AddReview()
-    return render(request, 'film_info.html', {'form': form, 'film': film, 'reviews': new_list, 'username': auth.get_user(request).username})
+        film = Film.objects.get(id=id)
+
+        for review in reviews:
+            if int(id) == review.film_id_id:
+                review_dict = dict()
+                review_dict['title'] = review.title
+                review_dict['review_text'] = review.review_text
+                review_dict['publication_date'] = review.publication_date
+                user = User.objects.get(id=review.user_id_id)
+                review_dict['username'] = user.username
+                review_dict['first_name'] = user.first_name
+                review_dict['last_name'] = user.last_name
+                new_list.append(review_dict)
+
+        return render(request, 'film_info.html', {'form': form, 'film': film, 'reviews': new_list,
+                                                  'username': auth.get_user(request).username})
 
 
 @csrf_exempt
