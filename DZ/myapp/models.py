@@ -10,13 +10,13 @@ class Film(models.Model):
     picture = models.FileField(null=True, blank=True, upload_to='static/')
 
     def __unicode__(self):
-        dict = {}
-        dict['name'] = self.name
-        dict['description'] = self.description
-        dict['country'] = self.country
-        dict['author'] = self.author
-        dict['picture_name'] = self.picture.name
-        return dict
+        dictionary = dict()
+        dictionary['name'] = self.name
+        dictionary['description'] = self.description
+        dictionary['country'] = self.country
+        dictionary['author'] = self.author
+        dictionary['picture_name'] = self.picture.name
+        return dictionary
 
     def __str__(self):
         return 'Title: {}, Author: {}, Country: {}'.format(self.name, self.author, self.country)
@@ -30,13 +30,13 @@ class Review(models.Model):
     publication_date = models.DateField()
 
     def __unicode__(self):
-        dict = {}
-        dict['film_id'] = self.film_id
-        dict['user_id'] = self.user_id
-        dict['title'] = self.title
-        dict['review_text'] = self.review_text
-        dict['publication_date'] = self.publication_date
-        return dict
+        dictionary = dict()
+        dictionary['film_id'] = self.film_id
+        dictionary['user_id'] = self.user_id
+        dictionary['title'] = self.title
+        dictionary['review_text'] = self.review_text
+        dictionary['publication_date'] = self.publication_date
+        return dictionary
 
     def __str__(self):
         return 'Title: {}, User id: {}, Film id: {}'.format(self.title, self.user_id, self.film_id)

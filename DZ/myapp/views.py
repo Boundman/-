@@ -2,14 +2,12 @@ from django.shortcuts import render, HttpResponse, HttpResponseRedirect
 from .forms import RegistrationForm, EnterForm, AddFilm, AddReview
 from django.contrib.auth.models import User
 from django.contrib import auth
-from django.views.decorators.csrf import csrf_protect, csrf_exempt
+from django.views.decorators.csrf import csrf_exempt
 import re
 import json
 import datetime
 from django.views.generic import View
-from DZ.settings import BASE_DIR, LOGIN_URL, STATICFILES_DIRS
 from myapp.models import Film, Review
-import django.contrib.admin
 
 
 class Start(View):
@@ -24,7 +22,7 @@ class Start(View):
                 return HttpResponseRedirect('/signup/')
 
 
-def signIn(request):
+def sign_in(request):
     errors = []
     if request.method == 'POST':
         if 'reg' in request.POST:
@@ -44,7 +42,7 @@ def signIn(request):
     return render(request, 'signIn.html', {'form': form, 'errors': errors})
 
 
-def signUp(request):
+def sign_up(request):
     errors = []
     success = ''
     if request.method == 'POST':
@@ -72,8 +70,7 @@ def signUp(request):
                     last_name=form.cleaned_data['last_name']
                 )
                 user.save()
-                success += 'Вы были успешно зарегистрированы!'
-                return HttpResponseRedirect('/login/')
+                return HttpResponseRedirect('/signin/')
 
     else:
         form = RegistrationForm()
@@ -116,25 +113,27 @@ class FilmsList(View):
             amount_pages = amount_films / 3
 
         form = AddFilm(request.POST or None)
-        return render(request, 'endReg.html', {'pages': amount_pages, 'form': form, 'username': auth.get_user(request).username})
+        return render(request, 'endReg.html', {'pages': amount_pages, 'form': form,
+                                               'username': auth.get_user(request).username})
 
 
 class FilmInfo(View):
-    def post(self, request, id):
+    def post(self, request, id_film):
         if request.method == 'POST':
+            print(id_film)
             if 'back' in request.POST:
                 return HttpResponseRedirect('/login/')
 
-    def get(self, request, id):
+    def get(self, request, id_film):
         form = AddReview(request.POST or None)
 
         new_list = []
         reviews = Review.objects.all()
 
-        film = Film.objects.get(id=id)
+        film = Film.objects.get(id=id_film)
 
         for review in reviews:
-            if int(id) == review.film_id_id:
+            if int(id_film) == review.film_id_id:
                 review_dict = dict()
                 review_dict['title'] = review.title
                 review_dict['review_text'] = review.review_text
@@ -150,9 +149,9 @@ class FilmInfo(View):
 
 
 @csrf_exempt
-def addReview(request):
+def add_review(request):
     if request.method == 'POST':
-        response_data = {}
+        response_data = dict()
         response_data['result'] = 'Create post successful!'
 
         title = request.POST.get('title')
@@ -187,7 +186,7 @@ def addReview(request):
         )
 
 
-def infiniteScroll(request):
+def infinite_scroll(request):
     if request.method == 'POST':
         films = Film.objects.all()
 
