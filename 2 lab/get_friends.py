@@ -1,25 +1,27 @@
 import requests
 from base_class import *
 
-class getFriends(BaseClient):
 
+class getFriends(BaseClient):
     BASE_URL = 'https://api.vk.com/method/'
-    method = 'friends.get'
+    method = 'friends.get?user_ids='
     http_method = 'get'
-    
+    rest_url_code = '&fields=bdate&v=5.73'
+
     def __init__(self, id):
+        self.id = id
         self.parameters = (('user_id', id), ('fields', 'bdate'))
 
     def get_params(self):
         return self.parameters
-    
+
     def generate_url(self, method):
-        return '{0}{1}'.format(self.BASE_URL, method)
+        return '{}{}{}{}'.format(self.BASE_URL, self.method, self.id, self.rest_url_code)
 
     def _get_data(self, method, http_method):
         try:
-            #response = requests[http_method](generate_url(method), params = self.get_params())
-            response = requests.get(self.generate_url(method), params = self.get_params())
+            # response = requests[http_method](generate_url(method), params = self.get_params())
+            response = requests.get(self.generate_url(method), params=self.get_params())
         except ConnectionError:
             print('Неудачная попытка отправки запроса')
         else:
